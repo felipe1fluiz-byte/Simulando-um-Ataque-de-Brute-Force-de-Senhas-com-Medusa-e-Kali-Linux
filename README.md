@@ -17,21 +17,35 @@ Documentar os testes: wordlists simples, comandos utilizados, validação de ace
 ⚠️ Atenção: Este desafio é flexível! Você pode seguir os cenários propostos (FTP, DVWA, SMB) ou adaptar à sua realidade: experimentar outras ferramentas, criar novas wordlists, explorar módulos/serviços diferentes, ou apenas documentar em detalhes o que aprendeu, com estudos, reflexões e exemplos de código. O mais importante é demonstrar seu entendimento e compartilhar sua jornada de aprendizado!
 
 
-## Conteúdo
-- **scripts/** — ferramentas de análise de logs e detecção (Python) para treino.
-- **wordlists/** — wordlists pequenas para testes controlados (apenas para uso em laboratório autorizado).
-- **config/** — exemplos de configuração para Fail2Ban e regras Suricata.
-- **logs/** — logs de exemplo (fictícios) para praticar análise.
-- **playbooks/** — procedimentos de resposta a incidentes (detecção → contenção → recuperação).
-- **images/** — capturas de tela organizadas (opcionais).
-
----
-
-## Como usar (fluxo recomendado)
-1. Prepare um ambiente isolado (VMs em `host-only` / `internal network`).  
-2. Crie snapshots antes de qualquer experimento.  
-3. Execute serviços alvo em uma VM (por exemplo, SSH) com contas de teste.  
-4. Simule tentativas de autenticação (apenas em seu laboratório) ou use os logs de `logs/sample_auth.log`.  
-5. Rode `scripts/detect_bruteforce.py` contra os logs de teste para identificar padrões.  
-6. Aplique configurações de mitigação (`config/fail2ban_jail.local.example`) e regras IDS (`config/suricata_bruteforce.rules`) em sua VM de deteção.  
-7. Use `playbooks/playbook_detect_and_respond.md` como guia de processo.
+.
+├── .gitignore
+├── README.md
+├── SECURITY.md
+├── LICENSE
+├── docs/                       # Documentação final (para GitHub Pages / MkDocs)
+│   ├── index.md
+│   ├── ambiente.md
+│   ├── testes/
+│   │   ├── ftp_bruteforce.md
+│   │   ├── dvwa_form.md
+│   │   └── smb_password_spray.md
+│   └── mitigacao.md
+├── reports/                    # Relatórios formais em markdown / PDF
+│   ├── report-summary.md
+│   └── anexos/                 # screenshots, logs redacted
+├── scripts/                    # scripts de automação (bash, python)
+│   ├── setup_vms.sh
+│   ├── run_medusa_ftp.sh
+│   └── gather_evidence.sh
+├── wordlists/                  # wordlists pequenas (NÃO inclua listas grandes proprietárias)
+│   ├── small-userlist.txt
+│   └── small-passlist.txt
+├── evidence/                   # screenshots e logs (git-lfs ou privado)
+│   ├── ftp-login-01.png
+│   └── dvwa-form-01.png
+├── templates/
+│   ├── ISSUE_TEMPLATE.md
+│   └── PULL_REQUEST_TEMPLATE.md
+└── .github/
+    └── workflows/
+        └── build_docs.yml      # opcional: CI que gera docs
