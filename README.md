@@ -17,35 +17,14 @@ Documentar os testes: wordlists simples, comandos utilizados, validação de ace
 ⚠️ Atenção: Este desafio é flexível! Você pode seguir os cenários propostos (FTP, DVWA, SMB) ou adaptar à sua realidade: experimentar outras ferramentas, criar novas wordlists, explorar módulos/serviços diferentes, ou apenas documentar em detalhes o que aprendeu, com estudos, reflexões e exemplos de código. O mais importante é demonstrar seu entendimento e compartilhar sua jornada de aprendizado!
 
 
-.
-├── .gitignore
-├── README.md
-├── SECURITY.md
-├── LICENSE
-├── docs/                       # Documentação final (para GitHub Pages / MkDocs)
-│   ├── index.md
-│   ├── ambiente.md
-│   ├── testes/
-│   │   ├── ftp_bruteforce.md
-│   │   ├── dvwa_form.md
-│   │   └── smb_password_spray.md
-│   └── mitigacao.md
-├── reports/                    # Relatórios formais em markdown / PDF
-│   ├── report-summary.md
-│   └── anexos/                 # screenshots, logs redacted
-├── scripts/                    # scripts de automação (bash, python)
-│   ├── setup_vms.sh
-│   ├── run_medusa_ftp.sh
-│   └── gather_evidence.sh
-├── wordlists/                  # wordlists pequenas (NÃO inclua listas grandes proprietárias)
-│   ├── small-userlist.txt
-│   └── small-passlist.txt
-├── evidence/                   # screenshots e logs (git-lfs ou privado)
-│   ├── ftp-login-01.png
-│   └── dvwa-form-01.png
-├── templates/
-│   ├── ISSUE_TEMPLATE.md
-│   └── PULL_REQUEST_TEMPLATE.md
-└── .github/
-    └── workflows/
-        └── build_docs.yml      # opcional: CI que gera docs
+# Kali + Medusa — Lab de Força Bruta (Bootcamp)
+
+Resumo: laboratório que demonstra ataques de força bruta com Medusa contra Metasploitable2 e DVWA, e medidas de mitigação.
+
+Estrutura do repositório:
+- `docs/` — documentação detalhada dos testes
+- `scripts/` — scripts de execução
+- `wordlists/` — wordlists usadas (pequenas)
+- `evidence/` — screenshots e logs (redacted)
+
+⚠️ Uso autorizado apenas em ambientes de laboratório controlados. Veja `SECURITY.md`.
