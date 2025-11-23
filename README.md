@@ -163,7 +163,7 @@ Agora vamos testar manualmente a conexão FTP:
 **COM ISSO FINALIZAMOS A SIMULAÇÃO DO ATAQUE DE BRUTE FORCE EM FTP**
 
 
-
+**2.3. Automação de tentativas em formulário web (DVWA)**
 
 
 ⚠️ Uso autorizado apenas em ambientes de laboratório controlados. Veja `SECURITY.md`.⚠️
