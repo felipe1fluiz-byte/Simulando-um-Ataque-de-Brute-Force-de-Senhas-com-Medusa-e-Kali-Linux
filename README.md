@@ -28,55 +28,64 @@ Implementar, documentar e compartilhar um projeto prático utilizando Kali Linux
 
 # 1. Diagnóstico de rede e conexão
 
-Inicialmente foi detectada falha de comunicação de serviços devido à rede NAT (IPs como 10.0.2.15) estavam isolando o Metasploitable 2.
+**1.1 Inicialmente vamos configurar a conexão para não termos falha de comunicação de serviços devido à rede NAT (IPs como 10.0.2.15) estavam isolando o Metasploitable 2.**
 
-1.1. Portas fechadas
+O Nmap na rede NAT reportará as portas críticas como closed, e o FTP recusado.
 
-O Nmap na rede NAT reporta as portas críticas como closed, e o FTP recusado.
+**1.2. Solução (Host-Only)** 
 
-*Inserir print*
-
-
+A reconfiguração para Adaptador Somente de Host (Host-Only) foi implementada em ambas VMs, forçando-as a se comunicarem na faixa 192.168.56.x.
 
 
-1.2. Solução (Host-Only) 
-
-A reconfiguração para Adaptador Somente de Host (Host-Only) foi implementada, forçando as VMs a se comunicarem na faixa 192.168.56.x.
-
-
-*Inserir print*
+<img width="951" height="553" alt="image" src="https://github.com/user-attachments/assets/dc457620-dc15-4117-a65b-1da940154ddc" />
 
 
 
-
-Comprovação: O Nmap confirmou que os serviços FTP (21), SSH (22), HTTP (80) estão acessíveis. 
+**Comprovação**: O Nmap confirmou que os serviços FTP (21), SSH (22), HTTP (80) estão acessíveis. 
 
 
 
     
-*Inserir print*
+<img width="646" height="565" alt="image" src="https://github.com/user-attachments/assets/5ff406fb-6bd1-459f-a5b2-fd96b5e59b43" />
 
 
 
 
-1.3. Alcançando a Maquina Vulnerável no Metaesploitable 2.0
 
-Abrir terminal na VM Kali e usar o comando: 
+**1.3. Alcançando a Maquina Vulnerável no Metaesploitable 2.0**
+
+Abrir terminal na VM Kali para testar a conectividade das VMs, usar o comando: 
         
       ping -c 3 192.168.56.102
 
- *Inserir print*
 
- Foco no serviço FTP, que pode estar com falhas.
- Então vamos ENUMERAR usando o NMAP usando o comando:
+      
+
+ <img width="646" height="243" alt="image" src="https://github.com/user-attachments/assets/f3fd48a2-760a-4f6c-b220-f8bb23421ddd" />
+
+
+
+
+
+ Como demonstrado as VMs estão enviando e recebendo pacotes então vamos focar agora no serviço FTP, que pode estar com falhas.
+ 
+ 
+ Então vamos ENUMERAR usando o NMAP com o comando:
+
 
       nmap -sV -p 21,22,80,445,139 192.168.56.102
 
-*Inserir print*
+
+<img width="631" height="318" alt="image" src="https://github.com/user-attachments/assets/0779d696-8373-4341-8cfc-4e4ae3979532" />
+
+
+
+Aqui como já vimos anteriormente, verificamos que a porta 21/TCP está aberta e vamos começar a explora-la.
+
 
 # 2. Executando Ataques Simulados 
 
- Criar wordlists 'users' e 'passwords' usando o comando:
+ **2.1. Criar wordlists 'users' e 'passwords' usando o comando:**
 
     echo -e 'user\nmsfadmin\nadmin\nroot' > users.txt
 
