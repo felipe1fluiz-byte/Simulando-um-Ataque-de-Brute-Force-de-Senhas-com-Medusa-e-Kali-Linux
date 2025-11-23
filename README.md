@@ -32,19 +32,29 @@ Inicialmente foi detectada falha de comunicação de serviços devido à rede NA
 
 1.1. Portas fechadas
 
-. O Nmap na rede NAT reporta as portas críticas como closed, e o FTP recusado.
-Inserir print
+O Nmap na rede NAT reporta as portas críticas como closed, e o FTP recusado.
+
+*Inserir print*
 
 
 
 
 1.2. Solução (Host-Only) 
+
 A reconfiguração para Adaptador Somente de Host (Host-Only) foi implementada, forçando as VMs a se comunicarem na faixa 192.168.56.x.
 
-Comprovação: O Nmap confirmou que os serviços FTP (21), SSH (22), HTTP (80) estão acessíveis. PRINT
+
+*Inserir print*
+
+
+
+
+Comprovação: O Nmap confirmou que os serviços FTP (21), SSH (22), HTTP (80) estão acessíveis. 
+
+
 
     
-
+*Inserir print*
 
 
 
@@ -55,20 +65,22 @@ Abrir terminal na VM Kali e usar o comando:
         
       ping -c 3 192.168.56.102
 
- print
+ *Inserir print*
 
  Foco no serviço FTP, que pode estar com falhas.
  Então vamos ENUMERAR usando o NMAP usando o comando:
 
       nmap -sV -p 21,22,80,445,139 192.168.56.102
 
-
+*Inserir print*
 
 # 2. Executando Ataques Simulados 
- Criar wordlists 
- users e passwords usando o comando:
 
-    "echo -e 'user\nmsfadmin\nadmin\nroot' > users.txt"
+ Criar wordlists 'users' e 'passwords' usando o comando:
+
+    echo -e 'user\nmsfadmin\nadmin\nroot' > users.txt
+
+    echo -e 'user\nmsfadmin\nadmin\nroot' > passwords.txt
 
  
 
