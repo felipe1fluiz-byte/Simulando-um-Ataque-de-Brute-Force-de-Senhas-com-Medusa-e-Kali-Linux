@@ -165,5 +165,165 @@ Agora vamos testar manualmente a conexão FTP:
 
 **2.3. Automação de tentativas em formulário web (DVWA)**
 
+Abra o navegador e coloque o endereço:
+
+
+       192.168.56.102/dvwa/login.php
+       
+       
+
+<img width="729" height="524" alt="image" src="https://github.com/user-attachments/assets/dad77e1c-0ce4-4897-b963-91d4078c0041" />
+
+
+ Abrir a barra de Desenvolvedor com a tecla F12.
+
+ Clique na barra network, isso nos permite ver tudo que o navegador está enviando durante a interação.
+
+ Vamos fazer uma tentativa de login com credenciais aleatórias e observar oque é retornado.
+
+ Observamos que ao clicar na primeira requisição 'POST' depois em na aba 'Resquest' temos a informação do login e senha, que foi enviado na tentativa aleatória.
+
+       
+<img width="758" height="623" alt="image" src="https://github.com/user-attachments/assets/767220a1-11b0-410a-8032-85d36eaef73e" />
+
+
+ **2.4. Criar Wordlists**
+ 
+Abra o terminal e escreva os seguintes comandos: 
+
+      echo -e "user\nmsfadmin\nadmin\nroot" > users.txt
+
+      echo -e "123456\npassword\nqwerty\nmsfadmin' > pass.txt 
+
+
+
+Agora vamos usar o Medusa para fazer a tentativa de Login com o seguinte comando:
+       
+         medusa -h 192.168.56.102 -U users.txt -P pass.txt -M http \
+     -m PAGE:'/dvwa/login.php' \
+     -m FORM:'username=^USER^&password=^PASS^&Login=Login' \
+     -m FAIL='Login failed' -t 6
+
+
+
+
+**📌 Resumo geral**
+
+Esse comando:
+
+tenta logar no DVWA (/dvwa/login.php)
+
+usando listas de usuários e senhas
+
+enviando os campos corretos do formulário HTTP POST
+
+identifica quando o login falha pelo texto "Login failed"
+
+roda com 6 threads simultâneas
+
+até encontrar uma combinação válida
+
+**🧩 Explicação de cada parâmetro**
+
+**🔸 -h 192.168.56.102**
+
+Define o host alvo.
+É o IP da máquina onde o serviço DVWA está rodando (geralmente o Metasploitable + DVWA).
+
+**🔸 -U users.txt**
+
+Arquivo com a lista de usuários a testar.
+
+O Medusa vai tentar cada usuário listado.
+
+**🔸 -P pass.txt**
+
+Arquivo com a lista de senhas.
+
+Será testado cada usuário com cada senha → ataque de força bruta.
+
+**🔸 -M http**
+
+Seleciona o módulo HTTP, usado para atacar logins em páginas web.
+
+**🔧 Parâmetros avançados do módulo HTTP (-m)**
+
+Esses são necessários porque páginas web têm formulários, e o Medusa precisa saber:
+
+qual página acessar
+
+quais campos enviar
+
+como identificar erro
+
+**🔸 -m PAGE:'/dvwa/login.php'**
+
+Define qual página contém o formulário de login.
+
+No DVWA, a página de login é:
+
+       /dvwa/login.php
+
+O Medusa vai enviar requisições POST para esta URL.
+
+**🔸 -m FORM:'username=^USER^&password=^PASS^&Login=Login'**
+
+Define quais campos do formulário devem ser enviados.
+
+Essa parte é essencial.
+
+Os campos são:
+
+      username = ^USER^
+      password = ^PASS^
+      Login = Login
+
+**▸ O que significam ^USER^ e ^PASS^?**
+
+^USER^ → substituído automaticamente pelo usuário da lista users.txt
+
+^PASS^ → substituído pela senha da lista pass.txt
+
+Ou seja, para cada tentativa, o Medusa envia algo como:
+
+      username=admin&password=1234&Login=Login
+
+**🔸 -m FAIL='Login failed'**  
+
+Define qual texto indica que o login falhou.
+
+No DVWA, quando a autenticação dá errado, aparece:
+
+
+      Login failed
+
+Então o Medusa usa isso para saber se deve continuar tentando ou se encontrou a credencial correta.
+
+Se o texto não aparecer → login bem-sucedido.
+
+**🔸 -t 6**
+
+Número de threads simultâneas.
+
+6 tentativas ao mesmo tempo
+
+deixa o ataque mais rápido
+
+*mas pode sobrecarregar o servidor*
+
+<img width="625" height="616" alt="image" src="https://github.com/user-attachments/assets/b7d98b8e-e826-4b50-be0c-92e359b0598a" />
+
+
+Conseguimos Entrar com as Credenciais em destaque: admin e password
+
+
+<img width="1361" height="701" alt="image" src="https://github.com/user-attachments/assets/9f7fcb5d-475a-4780-9c44-472df3d3b8d9" />
+
+em um sistema real isso poderia nos dar acesso total ao painel administrativo
+
 
 ⚠️ Uso autorizado apenas em ambientes de laboratório controlados. Veja `SECURITY.md`.⚠️
+
+
+**3.0
+
