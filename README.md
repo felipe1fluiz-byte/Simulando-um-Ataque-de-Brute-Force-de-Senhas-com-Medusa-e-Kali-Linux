@@ -87,13 +87,80 @@ Aqui como já vimos anteriormente, verificamos que a porta 21/TCP está aberta e
 
  **2.1. Criar wordlists 'users' e 'passwords' usando o comando:**
 
-    echo -e 'user\nmsfadmin\nadmin\nroot' > users.txt
+    echo -e "user\nmsfadmin\nadmin\nroot" > users.txt
 
-    echo -e 'user\nmsfadmin\nadmin\nroot' > passwords.txt
+    echo -e "123456\npassword\nqwerty\nmsfadmin' > pass.txt
 
- 
+**2.2. Agora vamos rodar o Medusa usando o seguinte comando:**
+
+       
+        medusa -h 192.168.56.102 -U users.txt -P pass.txt -M ftp -t 6
 
 
+    
+**📌 Resumo rápido**
+
+| Parâmetro | Função                |
+| --------- | --------------------- |
+| `-h`      | Define o alvo         |
+| `-U`      | Lista de usuários     |
+| `-P`      | Lista de senhas       |
+| `-M`      | Serviço a ser atacado |
+| `-t`      | Threads simultâneas   |
+
+ **🔸 medusa**
+
+É o programa em si, responsável por tentar combinações de usuário e senha em serviços como FTP, SSH, SMB, etc.
+
+**🔸 -h 192.168.56.102**
+
+Host alvo.
+
+O IP que você quer atacar/testar.
+
+Aqui: a máquina vulnerável (provavelmente Metasploitable 2).
+
+**🔸 -U users.txt**
+
+Arquivo de usuários.
+
+O Medusa vai tentar cada usuário que estiver dentro do arquivo users.txt.
+
+**🔸 -P pass.txt**
+
+Arquivo de senhas.
+
+Contém uma lista de senhas que serão testadas para cada usuário.
+
+**🔸 -M ftp**
+
+Define o módulo / serviço que será atacado.
+
+Aqui está dizendo que você quer atacar o FTP do alvo.
+
+O Medusa tem módulos para ssh, telnet, rdp, smb, mysql, vnc e muitos outros
+
+**🔸 -t 6**
+
+Número de threads simultâneas.
+
+Significa que o Medusa vai rodar 6 tentativas ao mesmo tempo.
+
+Mais threads = mais rápido, porém pode derrubar o serviço ou ser bloqueado pelo servidor.
+
+
+<img width="638" height="623" alt="image" src="https://github.com/user-attachments/assets/680f194f-da1b-4fea-9ac4-9db6729fa28a" />
+
+
+Acima observamos as tentativas com as credenciais possíveis em nossas wordlists, e o SUCESS.
+
+Agora vamos testar manualmente a conexão FTP:
+
+<img width="636" height="159" alt="image" src="https://github.com/user-attachments/assets/f1e8ad62-258b-427f-b0b8-79652c3a46d5" />
+
+
+
+**COM ISSO FINALIZAMOS A SIMULAÇÃO DO ATAQUE DE BRUTE FORCE EM FTP**
 
 
 
