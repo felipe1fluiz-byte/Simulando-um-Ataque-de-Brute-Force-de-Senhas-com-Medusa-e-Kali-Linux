@@ -177,11 +177,11 @@ Abra o navegador e coloque o endereço:
 
  Abrir a barra de Desenvolvedor com a tecla F12.
 
- Clique na barra network, isso nos permite ver tudo que o navegador está enviando durante a interação.
+ Clique na aba network, isso nos permite ver tudo que o navegador está enviando durante a interação.
 
  Vamos fazer uma tentativa de login com credenciais aleatórias e observar oque é retornado.
 
- Observamos que ao clicar na primeira requisição 'POST' depois em na aba 'Resquest' temos a informação do login e senha, que foi enviado na tentativa aleatória.
+ Observamos que ao clicar na primeira requisição 'POST' depois em na aba 'Request' temos a informação do login e senha, que foi enviado na tentativa aleatória.
 
        
 <img width="758" height="623" alt="image" src="https://github.com/user-attachments/assets/767220a1-11b0-410a-8032-85d36eaef73e" />
@@ -189,7 +189,7 @@ Abra o navegador e coloque o endereço:
 
  **2.4. Criar Wordlists**
  
-Abra o terminal e escreva os seguintes comandos: 
+Abra o terminal e escreva os seguintes comandos para criar os wordlists: 
 
       echo -e "user\nmsfadmin\nadmin\nroot" > users.txt
 
@@ -228,7 +228,7 @@ até encontrar uma combinação válida
 **🔸 -h 192.168.56.102**
 
 Define o host alvo.
-É o IP da máquina onde o serviço DVWA está rodando (geralmente o Metasploitable + DVWA).
+É o IP da máquina onde o serviço DVWA está rodando (Metasploitable + DVWA).
 
 **🔸 -U users.txt**
 
@@ -287,6 +287,7 @@ Os campos são:
 Ou seja, para cada tentativa, o Medusa envia algo como:
 
       username=admin&password=1234&Login=Login
+      
 
 **🔸 -m FAIL='Login failed'**  
 
@@ -314,16 +315,276 @@ deixa o ataque mais rápido
 <img width="625" height="616" alt="image" src="https://github.com/user-attachments/assets/b7d98b8e-e826-4b50-be0c-92e359b0598a" />
 
 
-Conseguimos Entrar com as Credenciais em destaque: admin e password
+Conseguimos entrar com as credenciais em destaque: admin e password
 
 
 <img width="1361" height="701" alt="image" src="https://github.com/user-attachments/assets/9f7fcb5d-475a-4780-9c44-472df3d3b8d9" />
 
-em um sistema real isso poderia nos dar acesso total ao painel administrativo
+
+
+
+*⚠️em um sistema real isso poderia nos dar acesso total ao painel administrativo.⚠️*
+
+
+
+
+**3.0. Ataque em cadeia, enumeração SMB + password spraying**
+
+*Simulando um cenário comum em ambiente corporativo mal configurado*
+
+Vamos usar o comando: 
+
+       enum4linux -a 192.168.56.102 | tee enum4_output.txt
+       
+
+📌 Resumo
+
+| **Componente**         | **Descrição**                                                                                                        |                                                       |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `enum4linux -a`        | Executa todos os módulos de enumeração SMB/Samba disponíveis (usuários, grupos, compartilhamentos, políticas, etc.). |                                                       |
+| `192.168.56.102`       | Endereço IP do alvo que será enumerado.                                                                              |                                                       |
+| `  |                   | ` (pipe)                                                                                                             | Redireciona a saída do comando para outro utilitário. |
+| `tee enum4_output.txt` | Exibe a saída no terminal **e** salva simultaneamente no arquivo `enum4_output.txt`.                                 |                                                       |
+
+
+
+O enum4linux é uma ferramenta usada para enumeração SMB/Samba em sistemas Windows e Linux que utilizam serviços Samba.
+
+**A opção -a (all) diz ao programa para executar todas as enumerações disponíveis, incluindo:**
+
+Lista de usuários (RID cycling)
+
+Lista de grupos
+
+Lista de máquinas
+
+Enumeração de compartilhamentos (shares)
+
+Enumeração de políticas de senha
+
+Enumeração de informações do domínio/workgroup
+
+Detecção de impressoras via SMB
+
+Informações do sistema operacional remoto
+
+Testes de autenticação nula (null session)
+
+Ou seja, é uma varredura completa de informações acessíveis via SMB.
+
+**✔ IP alvo: 192.168.56.102**
+
+É o host que você está enumerando na rede local.
+
+**✔ Pipe (|)**
+
+Envia a saída do comando para outro programa.
+
+**✔ tee enum4_output.txt**
+
+O comando tee faz duas coisas ao mesmo tempo:
+
+Mostra a saída no terminal
+
+Salva uma cópia no arquivo enum4_output.txt
+
+*Assim, você pode ver os resultados em tempo real e ainda ter o arquivo salvo para análise posterior.*
+
+
+
+
+<img width="591" height="570" alt="image" src="https://github.com/user-attachments/assets/2fdfd98e-7afa-4ee7-84d9-a583f504fc5d" />
+
+
+
+
+<img width="571" height="550" alt="image" src="https://github.com/user-attachments/assets/f386bb8b-adc4-46e9-9a7a-ecc38a123891" />
+
+
+
+
+**3.1. agora vamos criar a WordList:**
+
+
+     echo -e "user\nmsfadmin\nservice" > smb.users.txt
+    
+     echo -e "password\n123456\nWelcome123\nmsfadmin" > senhas_spray.txt
+
+
+  Rodar o Medusa com o comando:
+
+
+        medusa -h 192.168.56.102 -U smb_users.txt -P senhas_spray.txt -M smbnt -t 2 -T 50
+
+
+📌 Resumo
+
+| Parâmetro             | Função                                       |
+| --------------------- | -------------------------------------------- |
+| `-h 192.168.56.102`   | Define o alvo SMB.                           |
+| `-U smb_users.txt`    | Lista de usuários a serem testados.          |
+| `-P senhas_spray.txt` | Lista de senhas a serem tentadas.            |
+| `-M smbnt`            | Módulo SMB/NTLM para autenticação.           |
+| `-t 2`                | Threads por host (2 tentativas simultâneas). |
+| `-T 50`               | Threads totais (limite global).              |
+
+
+✔ Explicação de cada parâmetro
+
+**-h 192.168.56.102**
+
+Define o host-alvo onde o brute-force será testado.
+
+**-U smb_users.txt**
+
+Especifica o arquivo contendo a lista de usuários.
+
+Cada linha desse arquivo deve conter um nome de usuário alvo do SMB.
+
+**-P senhas_spray.txt**
+
+Define o arquivo com a lista de senhas que será tentada para cada usuário.
+
+**-M smbnt**
+
+Escolhe o módulo de ataque.
+
+smbnt = módulo de autenticação SMB (NTLM)
+É usado para serviços SMB como compartilhamentos de arquivos do Windows.
+
+**-t 2**
+
+Número de threads por alvo.
+
+Aqui: 2 tentativas simultâneas para o mesmo host.
+
+**-T 50**
+
+Número total de threads para toda a execução.
+
+*Quanto maior, mais rápido — mas pode gerar bloqueios, quedas ou detecção por sistemas de segurança.*
+
+
+
+ 
+<img width="591" height="567" alt="image" src="https://github.com/user-attachments/assets/3fb3d2b5-6de2-40c2-ae0f-ae824b71917e" />
+
+
+
+
+**3.2 Testando o acesso ao SMBCLIENT**
+
+      smbclient -L \\192.168.56.102 -U msfadmin
+
+
+<img width="589" height="572" alt="image" src="https://github.com/user-attachments/assets/bfd569e0-3ca0-4321-b1ec-a1bad70bfd9a" />
+
+
+
+📌 Resumo
+
+| Componente         | Função                                                              |
+| ------------------ | ------------------------------------------------------------------- |
+| `smbclient`        | Cliente SMB/CIFS para interação com compartilhamentos Windows/Samba |
+| `-L`               | Lista os compartilhamentos e informações do servidor                |
+| `\\192.168.56.102` | Endereço do servidor SMB alvo                                       |
+| `-U msfadmin`      | Usuário usado para autenticação                                     |
+
+
+
+**smbclient -L**
+
+A opção -L (List) indica que você quer listar os recursos SMB disponíveis no host remoto.
+
+Isso normalmente retorna:
+
+Compartilhamentos de arquivos (Shares)
+
+Impressoras compartilhadas
+
+Informações do servidor SMB
+
+Workgroup / Domain
+
+**\\192.168.56.102**
+
+Especifica o endereço SMB do servidor.
+
+A notação com barras invertidas é o formato padrão SMB/CIFS:
+
+      \\<IP-ou-hostname>
+
+**-U msfadmin**
+
+Define o usuário que será usado para autenticação.
+
+Após executar o comando, o smbclient pedirá a senha desse usuário.
+
+Isso permite:
+
+Listar compartilhamentos acessíveis ao usuário msfadmin
+
+Testar permissões de acesso
+
+Descobrir shares protegidos por senha
+
+
+**🛡 Por que isso é útil em pentesting?**
+
+Esse comando é fundamental para:
+
+Descobrir shares públicos ou mal configurados
+
+Verificar acesso com credenciais conhecidas
+
+Identificar possíveis pontos de exploração via SMB
+
+Obter informações complementares antes de montar um ataque SMB ou enumeração mais profunda
+
+
+# ✅ Conclusão Resumida – Recomendações de Mitigação
+
+A execução dos ataques de força bruta e password spraying demonstrou que serviços como FTP, aplicações web vulneráveis (DVWA) e compartilhamentos SMB podem ser facilmente comprometidos quando utilizam credenciais fracas ou não possuem controles de proteção adequados. Para mitigar esses riscos, recomenda-se:
+
+**1. Fortalecimento de credenciais**
+
+Implementar políticas de senha forte (comprimento mínimo, complexidade e expiração).
+
+Exigir o uso de MFA sempre que possível.
+
+Evitar contas padrão (ex.: admin, msfadmin) ou sem senha.
+
+**2. Redução da superfície de ataque**
+
+Desabilitar serviços desnecessários como FTP e Telnet, substituindo por alternativas seguras (ex.: SSH/SFTP).
+
+Restringir o acesso a portas e serviços internos com firewall e ACLs.
+
+**3. Limitação de tentativas de login**
+
+Configurar account lockout, delays progressivos ou captchas em serviços de autenticação.
+
+Em SMB, aplicar políticas de bloqueio após falhas consecutivas para evitar password spraying.
+
+**4. Monitoramento e detecção**
+
+Habilitar e revisar logs de autenticação (FTP, Apache, SSH, Samba).
+
+Utilizar ferramentas de detecção (IDS/IPS) para identificar comportamentos de brute-force.
+
+**5. Endurecimento de aplicações web**
+
+Ajustar níveis de segurança em aplicações como DVWA.
+
+Corrigir validações fracas de formulários e aplicar rate-limiting em endpoints de login.
+
+**6. Segmentação e controle de privilégios**
+
+Usar o princípio de Least Privilege.
+
+Segmentar redes internas para que a exploração de uma máquina não comprometa todo o ambiente.
+
 
 
 ⚠️ Uso autorizado apenas em ambientes de laboratório controlados. Veja `SECURITY.md`.⚠️
-
-
-**3.0
 
