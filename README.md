@@ -1,5 +1,6 @@
 # ✅ Desafio DIO: Simulando um Ataque de Brute Force de Senhas com Medusa e Kali Linux
 
+   <img src="https://tryhackme-badges.s3.amazonaws.com/Hazashi21.png" alt="Your Image Badge" />
 
 ⚠️ **Atenção - Este repositório não contém instruções para realizar ataques. Use apenas em ambientes com autorização.**
 
@@ -588,3 +589,6 @@ Segmentar redes internas para que a exploração de uma máquina não comprometa
 
 ⚠️ Uso autorizado apenas em ambientes de laboratório controlados. Veja `SECURITY.md`.⚠️
 
+
+
+<img src="https://tryhackme-badges.s3.amazonaws.com/Hazashi21.png" alt="Your Image Badge" />
